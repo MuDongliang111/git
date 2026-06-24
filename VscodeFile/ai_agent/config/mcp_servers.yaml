@@ -1,0 +1,18 @@
+mcp_servers:
+  # Example: filesystem MCP server (requires npx)
+  - name: filesystem
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-filesystem"
+      - "/tmp/mcp-workspace"
+    transport: stdio
+    auto_connect: false
+
+  # Example: fetch MCP server (requires uvx)
+  - name: fetch
+    command: uvx
+    args:
+      - "mcp-server-fetch"
+    transport: stdio
+    auto_connect: false

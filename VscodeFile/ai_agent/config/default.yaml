@@ -1,0 +1,29 @@
+agent:
+  model: "deepseek-v4-pro"
+  max_tokens: 4096
+  max_tool_rounds: 10
+  temperature: 1.0
+  reasoning_effort: "high"
+  thinking: true
+  system_prompt: |
+    你是一个可以使用工具的 AI 助手。
+    在需要时使用工具来完成用户的请求。
+    如果无法使用可用工具完成任务，请说明还需要什么额外的能力。
+    始终使用用户的语言进行回复（如果用户使用中文提问，则用中文回复）。
+
+tools:
+  enabled:
+    - calculator
+    - web_search
+    - web_fetch
+    - file_read
+    - file_write
+    - file_list
+    - datetime_now
+  confirm:
+    - file_write
+
+skills_dir: "./skills"
+tool_timeout: 30.0
+
+mcp_servers: []

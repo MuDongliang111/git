@@ -1,0 +1,7 @@
+name: web_researcher
+version: "1.0.0"
+description: "Performs deep web research with multiple searches and source synthesis"
+requires_tools:
+  - web_search
+  - web_fetch
+requires_mcp: []

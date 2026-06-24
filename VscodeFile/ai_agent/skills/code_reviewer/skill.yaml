@@ -1,0 +1,7 @@
+name: code_reviewer
+version: "1.0.0"
+description: "Reviews code for bugs, style, and security issues"
+requires_tools:
+  - file_read
+  - file_list
+requires_mcp: []
