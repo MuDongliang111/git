@@ -1,7 +1,7 @@
 agent:
   model: "deepseek-v4-pro"
   max_tokens: 4096
-  max_tool_rounds: 10
+  max_tool_rounds: 20
   temperature: 1.0
   reasoning_effort: "high"
   thinking: true
@@ -24,6 +24,10 @@ tools:
     - file_write
 
 skills_dir: "./skills"
+skills:
+  - pptx_reader
+  - code_reviewer
+  - web_researcher
 tool_timeout: 30.0
 
 mcp_servers: []
