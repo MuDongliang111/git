@@ -1,0 +1,6 @@
+name: pptx_reader
+version: "1.0.0"
+description: "读取和分析 PowerPoint (.pptx) 文件，支持文本提取、关键词搜索、大纲查看和元数据获取"
+requires_tools:
+  - file_read
+requires_mcp: []

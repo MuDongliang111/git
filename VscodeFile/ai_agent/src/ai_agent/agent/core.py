@@ -151,11 +151,49 @@ class AgentCore:
 
             round_count += 1
 
-        # 超过最大轮次
+        # 超过最大轮次 — 进行一次无工具总结
         yield ErrorEvent(
-            message=f"已达到最大工具调用轮次 ({max_rounds})，已停止。",
-            recoverable=False,
+            message=f"已达到最大工具调用轮次 ({max_rounds})，正在基于已收集的信息进行总结...",
+            recoverable=True,
         )
+
+        # 不传工具，强制 LLM 基于已有对话进行纯文本总结
+        try:
+            text_buffer: list[str] = []
+            tool_call_accum: dict[int, dict[str, Any]] = {}
+            finalized_tool_uses: list[dict[str, Any]] = []
+            thinking_started = False
+
+            async for raw_chunk in self._llm.stream_message(
+                model=self._config.model,
+                system_prompt=system_prompt,
+                messages=self._history.to_messages(),
+                tools=[],  # 空列表 → 不传 tools，模型只能输出文本
+                max_tokens=self._config.max_tokens,
+                temperature=self._config.temperature,
+                reasoning_effort=reasoning_effort,
+                thinking=thinking,
+            ):
+                for event in self._process_raw_chunk(
+                    raw_chunk,
+                    text_buffer,
+                    tool_call_accum,
+                    finalized_tool_uses,
+                    thinking_started,
+                ):
+                    if isinstance(event, ThinkingStart):
+                        thinking_started = True
+                    yield event
+
+            full_text = "".join(text_buffer)
+            self._history.append_assistant_message(text=full_text)
+            yield TurnComplete(stop_reason="end_turn")
+        except Exception as exc:
+            logger.exception("总结 LLM 调用失败")
+            yield ErrorEvent(
+                message=f"总结生成失败: {exc}",
+                recoverable=False,
+            )
 
     def clear_history(self) -> None:
         """重置对话以开启新会话。"""
